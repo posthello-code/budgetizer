@@ -1,10 +1,19 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-export const Controls = () => {
-  const [inputText, setInputText] = useState("");
+export const Controls = (props: any) => {
+  const [monthlyIncomeInput, setMonthlyIncomeInput] = useState(1000);
+  const [expenseInput, setExpenseInput] = useState(0);
+  const [expenseNameInput, setExpenseNameInput] = useState("unknown");
+
   function handleClick() {
-    console.log(inputText);
+    props.setMonthlyIncome(monthlyIncomeInput);
+    props.setExpenses([
+      ...props.expenses,
+      { id: expenseNameInput, label: expenseNameInput, value: expenseInput },
+    ]);
   }
+
   return (
     <div
       style={{
@@ -15,9 +24,10 @@ export const Controls = () => {
         justifyItems: "center",
       }}
     >
-      <div>
+      <div id="monthly-income">
         <label style={{ width: "100%" }}>
-          Input<br></br>
+          Monthly Income
+          <br></br>
           <input
             style={{
               width: 200,
@@ -27,17 +37,58 @@ export const Controls = () => {
               borderWidth: 2,
               backgroundColor: "white",
             }}
+            defaultValue={10000}
             name="Input"
             onChange={(event) => {
-              setInputText(event.target.value);
+              setMonthlyIncomeInput(parseFloat(event.target.value));
             }}
           ></input>
         </label>
       </div>
-      <div>
-        <br></br>
+
+      <div id="expense-name">
+        <label style={{ width: "100%" }}>
+          Expense Name
+          <input
+            style={{
+              width: 200,
+              color: "black",
+              borderColor: "black",
+              borderRadius: 2,
+              borderWidth: 2,
+              backgroundColor: "white",
+            }}
+            name="Expense Name"
+            onChange={(event) => {
+              setExpenseNameInput(event.target.value);
+            }}
+          ></input>
+        </label>
+      </div>
+      <div id="expense">
+        <label style={{ width: "100%" }}>
+          Expense
+          <input
+            style={{
+              width: 200,
+              color: "black",
+              borderColor: "black",
+              borderRadius: 2,
+              borderWidth: 2,
+              backgroundColor: "white",
+            }}
+            name="expense-input"
+            onChange={(event) => {
+              setExpenseInput(parseFloat(event.target.value));
+            }}
+          ></input>
+        </label>
+      </div>
+
+      <div id="submit-button">
         <button
           style={{
+            marginTop: "20px",
             textAlign: "center",
             color: "black",
             borderColor: "grey",
@@ -47,7 +98,7 @@ export const Controls = () => {
           }}
           onClick={handleClick}
         >
-          Test!
+          Update
         </button>
       </div>
     </div>
