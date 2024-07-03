@@ -50,7 +50,7 @@ export default function Home() {
         <div style={{ marginTop: "20px", alignSelf: "center" }}>
           Expense List:{" "}
           {expenses.map((e: any) => (
-            <div id={e.id}>{`${e.id} ${e.value}`}</div>
+            <div id={e.id} key={e.id}>{`${e.id} ${e.value}`}</div>
           ))}
         </div>
       </div>
