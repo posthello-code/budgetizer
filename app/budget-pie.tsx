@@ -4,7 +4,15 @@ import { useEffect } from "react";
 export const BudgetPie = (props: any) => {
   useEffect(() => {});
   return (
-    <div id="chart" style={{ height: 500 }}>
+    <div
+      id="chart"
+      style={{
+        display: "grid",
+        gridAutoColumns: "minmax(0, 1fr)",
+        height: props.isSmallScreen ? "20rem" : "40rem",
+        paddingBottom: 50,
+      }}
+    >
       <ResponsivePie
         data={props.data}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
@@ -17,12 +25,13 @@ export const BudgetPie = (props: any) => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
+        colors={{ scheme: "paired" }}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#333333"
         arcLinkLabelsThickness={2}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabel="value"
-        arcLinkLabel="value"
+        arcLinkLabel="label"
         arcLabelsSkipAngle={10}
         arcLabelsTextColor={{
           from: "color",
@@ -96,31 +105,6 @@ export const BudgetPie = (props: any) => {
               id: "javascript",
             },
             id: "lines",
-          },
-        ]}
-        legends={[
-          {
-            anchor: "bottom",
-            direction: "row",
-            justify: false,
-            translateX: 0,
-            translateY: 56,
-            itemsSpacing: 0,
-            itemWidth: 100,
-            itemHeight: 18,
-            itemTextColor: "#999",
-            itemDirection: "left-to-right",
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: "circle",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemTextColor: "#000",
-                },
-              },
-            ],
           },
         ]}
       />
