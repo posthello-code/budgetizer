@@ -9,49 +9,58 @@ export default function Home() {
   const [expenses, setExpenses] = useState<
     [{ id: String; value: number; label: String }] | []
   >([]);
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
+
+  const onResize = () => {
+    setIsSmallScreen(window.innerWidth < 1020);
+  };
 
   useEffect(() => {
-    console.log(expenses);
-    console.log("Remainder " + monthlyIncome);
+    window.addEventListener("resize", onResize);
+    onResize();
   });
+
   return (
     <main>
       <div
         id="primary-view"
         style={{
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignContent: "center",
+          flex: 1,
+          flexDirection: isSmallScreen ? "column" : "row",
+          padding: 10,
         }}
       >
-        <br></br>
-        <Controls
-          setMonthlyIncome={setMonthlyIncome}
-          expenses={expenses}
-          setExpenses={setExpenses}
-        ></Controls>
-        <br></br>
-        <br></br>
-        <BudgetPie
-          data={[
-            ...expenses,
-            {
-              id: "Remainder",
-              label: "Remainder",
-              value:
-                expenses.length > 0
-                  ? monthlyIncome -
-                    expenses.map((e: any) => e.value).reduce((e, c) => e + c)
-                  : monthlyIncome,
-            },
-          ]}
-        ></BudgetPie>
-        <div style={{ marginTop: "20px", alignSelf: "center" }}>
-          Expense List:{" "}
-          {expenses.map((e: any) => (
-            <div id={e.id} key={e.id}>{`${e.id} ${e.value}`}</div>
-          ))}
+        <div
+          style={{
+            flex: 0.2,
+          }}
+        >
+          <Controls
+            isSmallScreen={isSmallScreen}
+            setMonthlyIncome={setMonthlyIncome}
+            expenses={expenses}
+            setExpenses={setExpenses}
+          ></Controls>
+        </div>
+
+        <div style={{ flex: 0.9 }}>
+          <BudgetPie
+            isSmallScreen={isSmallScreen}
+            data={[
+              {
+                id: "Remainder",
+                label: "Remainder",
+                value:
+                  expenses.length > 0
+                    ? monthlyIncome -
+                      expenses.map((e: any) => e.value).reduce((e, c) => e + c)
+                    : monthlyIncome,
+              },
+              ...expenses,
+              ,
+            ]}
+          ></BudgetPie>
         </div>
       </div>
     </main>
