@@ -50,6 +50,7 @@ export const Controls = (props: any) => {
           Monthly Income
           <br></br>
           <input
+            className="input-box"
             style={{
               color: "black",
               borderColor: "black",
@@ -67,6 +68,7 @@ export const Controls = (props: any) => {
       </div>
       <div id="submit-income-button">
         <button
+          className="btn-primary"
           style={{
             marginTop: "20px",
             marginBottom: "20px",
@@ -87,6 +89,7 @@ export const Controls = (props: any) => {
           Expense Name
           <br></br>
           <input
+            className="input-box"
             style={{
               color: "black",
               borderColor: "black",
@@ -106,6 +109,7 @@ export const Controls = (props: any) => {
           Expense
           <br></br>
           <input
+            className="input-box"
             style={{
               color: "black",
               borderColor: "black",
@@ -123,6 +127,7 @@ export const Controls = (props: any) => {
       </div>
       <div id="submit-expense-button">
         <button
+          className="btn-primary"
           style={{
             marginTop: "20px",
             textAlign: "center",
