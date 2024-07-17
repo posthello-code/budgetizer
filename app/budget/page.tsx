@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Controls } from "./controls";
 import { BudgetPie } from "./budget-pie";
+import Link from "next/link";
 
 export default function Home() {
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
@@ -12,7 +13,7 @@ export default function Home() {
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
 
   const onResize = () => {
-    setIsSmallScreen(window.innerWidth < 1020);
+    setIsSmallScreen(window.innerWidth < 1080);
   };
 
   useEffect(() => {
@@ -22,19 +23,26 @@ export default function Home() {
 
   return (
     <main style={{ height: "100vh" }}>
+      {
+        // TODO: uncomment once data loading can be done using budget name and passphrase
+        /* <button className="p-1">
+        <Link href="/">Back</Link>
+      </button> */
+      }
       <div
         id="primary-view"
         style={{
           display: "flex",
           flex: 1,
           flexDirection: isSmallScreen ? "column" : "row",
-          padding: 10,
+          paddingLeft: 50,
+          paddingRight: 50,
           height: "100%",
         }}
       >
         <div
           style={{
-            flex: 0.2,
+            flex: 0.25,
             alignContent: "center",
           }}
         >
@@ -46,7 +54,7 @@ export default function Home() {
           ></Controls>
         </div>
 
-        <div style={{ flex: 0.9, alignContent: "center" }}>
+        <div style={{ flex: 0.75, alignContent: "center" }}>
           <BudgetPie
             isSmallScreen={isSmallScreen}
             data={[

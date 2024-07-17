@@ -3,24 +3,35 @@
 import React from "react";
 import "./globals.css";
 import Link from "next/link";
+import Budget from "./budget/page";
 export default function Home() {
   return (
     <main>
-      <div
+      <Budget></Budget>
+      {
+        // TODO: uncomment once data loading can be done using budget name and passphrase
+        /* <div
         style={{
+          height: "100vh",
           display: "flex",
-          position: "absolute",
-          left: "50%",
-          top: "50%",
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
         }}
       >
         <button className="btn-primary">
-          <Link href="/budget">Start</Link>
+          <Link href="/budget">New Budget</Link>
         </button>
-      </div>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            alert("placeholder event - TODO: add a passphrase input heres");
+          }}
+        >
+          Load Budget
+        </button>
+      </div> */
+      }
     </main>
   );
 }
