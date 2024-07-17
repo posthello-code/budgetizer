@@ -45,19 +45,12 @@ export const Controls = (props: any) => {
         alignItems: props.isSmallScreen ? "center" : "left",
       }}
     >
-      <div id="monthly-income" style={{}}>
+      <div id="monthly-income">
         <label>
           Monthly Income
           <br></br>
           <input
             className="input-box"
-            style={{
-              color: "black",
-              borderColor: "black",
-              borderRadius: 2,
-              borderWidth: 2,
-              backgroundColor: "white",
-            }}
             defaultValue={1000}
             name="Input"
             onChange={(event) => {
@@ -72,12 +65,6 @@ export const Controls = (props: any) => {
           style={{
             marginTop: "20px",
             marginBottom: "20px",
-            textAlign: "center",
-            color: "black",
-            borderColor: "grey",
-            borderRadius: 2,
-            borderWidth: 1,
-            backgroundColor: "white",
           }}
           onClick={updateMonthlyIncome}
         >
@@ -90,13 +77,6 @@ export const Controls = (props: any) => {
           <br></br>
           <input
             className="input-box"
-            style={{
-              color: "black",
-              borderColor: "black",
-              borderRadius: 2,
-              borderWidth: 2,
-              backgroundColor: "white",
-            }}
             name="Expense Name"
             onChange={(event) => {
               setExpenseNameInput(event.target.value);
@@ -110,13 +90,6 @@ export const Controls = (props: any) => {
           <br></br>
           <input
             className="input-box"
-            style={{
-              color: "black",
-              borderColor: "black",
-              borderRadius: 2,
-              borderWidth: 2,
-              backgroundColor: "white",
-            }}
             defaultValue={100}
             name="expense-input"
             onChange={(event) => {
@@ -130,12 +103,6 @@ export const Controls = (props: any) => {
           className="btn-primary"
           style={{
             marginTop: "20px",
-            textAlign: "center",
-            color: "black",
-            borderColor: "grey",
-            borderRadius: 2,
-            borderWidth: 1,
-            backgroundColor: "white",
           }}
           onClick={updateExpenses}
         >
