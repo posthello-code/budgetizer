@@ -21,7 +21,7 @@ export default function Home() {
   });
 
   return (
-    <main>
+    <main style={{ height: "100vh" }}>
       <div
         id="primary-view"
         style={{
@@ -29,11 +29,13 @@ export default function Home() {
           flex: 1,
           flexDirection: isSmallScreen ? "column" : "row",
           padding: 10,
+          height: "100%",
         }}
       >
         <div
           style={{
             flex: 0.2,
+            alignContent: "center",
           }}
         >
           <Controls
@@ -44,7 +46,7 @@ export default function Home() {
           ></Controls>
         </div>
 
-        <div style={{ flex: 0.9 }}>
+        <div style={{ flex: 0.9, alignContent: "center" }}>
           <BudgetPie
             isSmallScreen={isSmallScreen}
             data={[
