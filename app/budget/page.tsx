@@ -43,7 +43,9 @@ export default function Home() {
         <div
           style={{
             flex: 0.25,
+            marginTop: isSmallScreen ? 50 : 0,
             alignContent: "center",
+            justifySelf: "center",
           }}
         >
           <Controls

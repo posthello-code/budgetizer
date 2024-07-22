@@ -29,6 +29,9 @@ export const BudgetPie = (props: any) => {
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#333333"
         arcLinkLabelsThickness={2}
+        arcLinkLabelsOffset={props.isSmallScreen ? -30 : 0}
+        arcLinkLabelsTextOffset={props.isSmallScreen ? -30 : 0}
+        arcLinkLabelsStraightLength={5}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabel="value"
         arcLinkLabel="label"
