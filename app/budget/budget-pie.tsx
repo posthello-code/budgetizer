@@ -9,7 +9,7 @@ export const BudgetPie = (props: any) => {
       style={{
         display: "grid",
         gridAutoColumns: "minmax(0, 1fr)",
-        height: props.isSmallScreen ? "20rem" : "40rem",
+        height: props.isSmallScreen ? "35rem" : "40rem",
         paddingBottom: 50,
       }}
     >
@@ -29,9 +29,10 @@ export const BudgetPie = (props: any) => {
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#333333"
         arcLinkLabelsThickness={2}
-        arcLinkLabelsOffset={props.isSmallScreen ? -30 : 0}
-        arcLinkLabelsTextOffset={props.isSmallScreen ? -30 : 0}
-        arcLinkLabelsStraightLength={5}
+        arcLabelsRadiusOffset={props.isSmallScreen ? 0.25 : 0.5}
+        arcLinkLabelsOffset={props.isSmallScreen ? -20 : 0}
+        arcLinkLabelsTextOffset={props.isSmallScreen ? -20 : 0}
+        arcLinkLabelsStraightLength={10}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabel="value"
         arcLinkLabel="label"
