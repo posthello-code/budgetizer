@@ -16,6 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html style={{ minHeight: "100vh" }} lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        ></meta>
+      </head>
       <body style={{ minHeight: "100vh" }} className={inter.className}>
         {children}
       </body>
