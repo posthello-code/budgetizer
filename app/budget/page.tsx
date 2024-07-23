@@ -42,7 +42,7 @@ export default function Home() {
       >
         <div
           style={{
-            flex: 0.25,
+            flex: isSmallScreen ? 0.5 : 0.25,
             marginTop: isSmallScreen ? 50 : 0,
             alignContent: "center",
             justifySelf: "center",
@@ -56,7 +56,13 @@ export default function Home() {
           ></Controls>
         </div>
 
-        <div style={{ flex: 0.75, alignContent: "center" }}>
+        <div
+          style={{
+            flex: isSmallScreen ? 0.25 : 0.75,
+            alignContent: "center",
+            padding: 20,
+          }}
+        >
           <BudgetPie
             isSmallScreen={isSmallScreen}
             data={[
