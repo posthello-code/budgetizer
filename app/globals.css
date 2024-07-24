@@ -3,17 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 214, 219, 220;
+  --foreground-rgb: 100, 100, 100;
+  --background-start-rgb: 214, 219, 230;
   --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 0, 0, 0;
-    --background-start-rgb: 255, 255, 255;
-    --background-end-rgb: 255, 255, 255;
-  }
 }
 
 body {
@@ -38,5 +30,35 @@ body {
   }
   .btn-primary {
     @apply font-bold border-2 border-black rounded-md p-2 mr-2;
+  }
+  .budget {
+    @apply bg-gray-300 rounded-3xl content-center justify-center max-w-[350px] max-h-[200px] h-[30rem] w-[30rem];
+    @apply sm:max-w-[630px] sm:max-h-[300px] sm:h-[30rem] sm:w-[40rem];
+    @apply md:max-w-[725px] md:max-h-[400px] md:h-[30rem] md:w-[50rem];
+    @apply lg:max-w-[775px] lg:max-h-[1000px] lg:h-[30rem] lg:w-[60rem];
+    @apply xl:max-w-[900px] xl:max-h-[1100px] xl:h-[40rem] xl:w-[60rem];
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 150, 150, 150;
+    --background-start-rgb: 30, 30, 30;
+    --background-end-rgb: 50, 50, 50;
+  }
+  @layer components {
+    .input-box {
+      @apply font-bold border-2 border-black rounded-md p-2 text-white bg-gray-700;
+    }
+    .btn-primary {
+      @apply font-bold border-2 border-gray-600 rounded-md p-2 mr-2;
+    }
+  }
+  .budget {
+    @apply bg-gray-500 rounded-3xl content-center justify-center max-w-[350px] max-h-[200px] h-[30rem] w-[30rem];
+    @apply sm:max-w-[630px] sm:max-h-[300px] sm:h-[30rem] sm:w-[40rem];
+    @apply md:max-w-[725px] md:max-h-[400px] md:h-[30rem] md:w-[50rem];
+    @apply lg:max-w-[775px] lg:max-h-[1000px] lg:h-[30rem] lg:w-[60rem];
+    @apply xl:max-w-[900px] xl:max-h-[1100px] xl:h-[40rem] xl:w-[60rem];
   }
 }

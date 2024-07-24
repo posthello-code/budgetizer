@@ -13,7 +13,7 @@ export default function Home() {
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
 
   const onResize = () => {
-    setIsSmallScreen(window.innerWidth < 1080);
+    setIsSmallScreen(window.innerWidth < 1024);
   };
 
   useEffect(() => {
@@ -35,15 +35,13 @@ export default function Home() {
           display: "flex",
           flex: 1,
           flexDirection: isSmallScreen ? "column" : "row",
-          paddingLeft: 50,
-          paddingRight: 50,
+          alignItems: "center",
           height: "100%",
         }}
       >
         <div
           style={{
-            flex: 0.25,
-            marginTop: isSmallScreen ? 50 : 0,
+            padding: 20,
             alignContent: "center",
             justifySelf: "center",
           }}
@@ -56,25 +54,21 @@ export default function Home() {
           ></Controls>
         </div>
 
-        <div style={{ flex: 0.75, alignContent: "center" }}>
-          <BudgetPie
-            isSmallScreen={isSmallScreen}
-            data={[
-              {
-                id: "Remainder",
-                label: "Remainder",
-                value:
-                  expenses.length > 0
-                    ? monthlyIncome -
-                      expenses
-                        .map((e: any) => e.value)
-                        .reduce((e, c) => e + c, 0)
-                    : monthlyIncome,
-              },
-              ...expenses,
-            ]}
-          ></BudgetPie>
-        </div>
+        <BudgetPie
+          isSmallScreen={isSmallScreen}
+          data={[
+            {
+              id: "Remainder",
+              label: "Remainder",
+              value:
+                expenses.length > 0
+                  ? monthlyIncome -
+                    expenses.map((e: any) => e.value).reduce((e, c) => e + c, 0)
+                  : monthlyIncome,
+            },
+            ...expenses,
+          ]}
+        ></BudgetPie>
       </div>
     </main>
   );

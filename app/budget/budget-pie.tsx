@@ -4,15 +4,7 @@ import { useEffect } from "react";
 export const BudgetPie = (props: any) => {
   useEffect(() => {});
   return (
-    <div
-      id="chart"
-      style={{
-        display: "grid",
-        gridAutoColumns: "minmax(0, 1fr)",
-        height: props.isSmallScreen ? "35rem" : "40rem",
-        paddingBottom: 50,
-      }}
-    >
+    <div className="budget" style={{ justifyContent: "center" }}>
       <ResponsivePie
         data={props.data}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
@@ -27,14 +19,12 @@ export const BudgetPie = (props: any) => {
         }}
         colors={{ scheme: "paired" }}
         arcLinkLabelsSkipAngle={10}
-        arcLinkLabelsTextColor="#333333"
+        arcLinkLabelsTextColor={"#333333"}
         arcLinkLabelsThickness={2}
-        arcLabelsRadiusOffset={props.isSmallScreen ? 0.25 : 0.5}
-        arcLinkLabelsOffset={props.isSmallScreen ? -20 : 0}
-        arcLinkLabelsTextOffset={props.isSmallScreen ? -20 : 0}
-        arcLinkLabelsStraightLength={10}
+        arcLinkLabelsStraightLength={3}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabel="value"
+        arcLabelsRadiusOffset={props.isSmallScreen ? 0.25 : 0.5}
         arcLinkLabel="label"
         arcLabelsSkipAngle={10}
         arcLabelsTextColor={{
