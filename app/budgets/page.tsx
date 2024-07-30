@@ -4,7 +4,7 @@ import { Controls } from "./components/controls";
 import { BudgetPie } from "./components/budget-pie";
 import Link from "next/link";
 import useBudget from "./[id]/swr";
-import budgetizerApi from "../services/api";
+import budgetizerApi from "../services/budgetizer-api";
 import { useRouter } from "next/navigation";
 
 export default function BudgetPage(options: any) {
