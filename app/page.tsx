@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import "./globals.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import budgetizerApi from "./services/budgetizer-api";
 
 export default function Home() {
   const router = useRouter();
   const [loaderInput, setLoaderInput] = useState<boolean>(false);
   const [budgetId, setBudgetId] = useState<string>("");
-
+  // ping render to wake up the backend
+  budgetizerApi.ping();
   return (
     <main>
       <div className="home-page">

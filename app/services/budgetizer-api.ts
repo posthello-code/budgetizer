@@ -1,6 +1,10 @@
 import axios, { AxiosResponse } from "axios";
 import environment from "../environment/default";
 export default class budgetizerApi {
+  static async ping(): Promise<AxiosResponse> {
+    const url = `${environment.baseUrl}/`;
+    return axios.post(url);
+  }
   static async createBudget(data: {}): Promise<AxiosResponse> {
     const url = `${environment.baseUrl}/budgets`;
     return axios.post(url, data);
