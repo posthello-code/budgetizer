@@ -59,6 +59,6 @@ body {
     @apply sm:max-w-[630px] sm:max-h-[300px] sm:h-[30rem] sm:w-[40rem];
     @apply md:max-w-[725px] md:max-h-[400px] md:h-[30rem] md:w-[50rem];
     @apply lg:max-w-[775px] lg:max-h-[1000px] lg:h-[30rem] lg:w-[60rem];
-    @apply xl:max-w-[900px] xl:max-h-[1100px] xl:h-[40rem] xl:w-[60rem];
+    @apply xl:max-w-[950px] xl:max-h-[1000px] xl:h-[80rem] xl:w-[80rem] ml-10 mr-10;
   }
 }
