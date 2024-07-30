@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import "./globals.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import budgetizerApi from "./services/budgetizer-api";
 
 export default function Home() {
   const router = useRouter();
   const [loaderInput, setLoaderInput] = useState<boolean>(false);
   const [budgetId, setBudgetId] = useState<string>("");
-
+  // ping render to wake up the backend
+  budgetizerApi.ping();
   return (
     <main>
       <div className="home-page">
@@ -33,7 +35,7 @@ function HomePageButtons(
   return (
     <div className="home-page-buttons">
       <button className="btn-primary">
-        <Link href="/budget">New Budget</Link>
+        <Link href="/budgets">New Budget</Link>
       </button>
       <button
         className="btn-primary"
@@ -76,7 +78,7 @@ function BudgetLoaderControls(props: any) {
         <button
           className="btn-primary"
           onClick={() => {
-            router.push(`/budget?id=` + budgetId);
+            router.push(`/budgets?id=` + budgetId);
           }}
         >
           Proceed
