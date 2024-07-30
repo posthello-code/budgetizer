@@ -7,7 +7,11 @@ export const BudgetPie = (props: any) => {
     <div className="budget" style={{ justifyContent: "center" }}>
       <ResponsivePie
         data={props.data}
-        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+        margin={
+          props.isSmallScreen
+            ? { top: 50, right: 50, bottom: 50, left: 50 }
+            : { top: 50, right: 125, bottom: 50, left: 125 }
+        }
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}
