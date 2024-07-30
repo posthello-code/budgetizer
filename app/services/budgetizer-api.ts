@@ -3,7 +3,7 @@ import environment from "../environment/default";
 export default class budgetizerApi {
   static async ping(): Promise<AxiosResponse> {
     const url = `${environment.baseUrl}/`;
-    return axios.post(url);
+    return axios.get(url);
   }
   static async createBudget(data: {}): Promise<AxiosResponse> {
     const url = `${environment.baseUrl}/budgets`;
