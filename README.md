@@ -2,7 +2,7 @@ A simple budgeting app.
 
 * Check out the live version here [here](https://nextjs-weld-beta-80.vercel.app)
 * If you press the save button, data is saved to the [backend](https://github.com/posthello-code/budgetizer-backend)
-* When you save the budget a UUID will be generated.
+* When you save the budget an ID will be generated.
 * There is no authentication but you can only reload or update a budget if you know the ID.
 * You can reload a budget using the ID on the main page or else you can navigate directly to it using the id in the url. Example: `https://nextjs-weld-beta-80.vercel.app/budgets/{id}`
 
