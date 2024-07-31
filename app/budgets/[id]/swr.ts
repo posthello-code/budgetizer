@@ -4,6 +4,7 @@ import budgetizerApi from "../../services/budgetizer-api";
 
 const fetcher = async (id: string): Promise<AxiosResponse> => {
   const r = await budgetizerApi.getBudgetById(id);
+  r.data = { id: r.data._id, data: r.data.data };
   return r.data;
 };
 
