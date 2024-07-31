@@ -6,6 +6,7 @@ import Link from "next/link";
 import useBudget from "./[id]/swr";
 import budgetizerApi from "../services/budgetizer-api";
 import { useRouter } from "next/navigation";
+import { Budget } from "./models";
 
 export default function BudgetPage(options: any) {
   const router = useRouter();
@@ -56,22 +57,24 @@ export default function BudgetPage(options: any) {
         <button
           className="btn-primary"
           onClick={async () => {
-            const budgetData = {
+            const budgetData: Budget = {
+              id: options.searchParams.id,
               data: { monthlyIncome: monthlyIncome, expenses: expenses },
             };
-            setIsSaving(true);
             let results;
             const alertText =
               "To load your data in the future, enter the following ID on the home page";
             if (options.searchParams.id) {
+              //router.push(`/budgets/save?id=${options.searchParams.id}`);
+              setIsSaving(true);
               results = await budgetizerApi.updateBudgetById(
                 options.searchParams.id,
                 budgetData
               );
               setIsSaving(false);
-              console.log(results.data);
               alert(`${alertText} ${options.searchParams.id}`);
             } else {
+              setIsSaving(true);
               results = await budgetizerApi.createBudget(budgetData);
               setIsSaving(false);
               alert(`${alertText} ${results.data._id}`);
