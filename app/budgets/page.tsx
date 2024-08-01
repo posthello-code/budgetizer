@@ -10,6 +10,7 @@ import { Budget } from "./models";
 
 export default function BudgetPage(options: any) {
   const router = useRouter();
+  const [errorOnLastLoad, setErrorOnLastLoad] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [loadedOnce, setLoadedOnce] = useState<boolean>(false);
   const { data, isLoading, isError } = useBudget(options.searchParams.id);
@@ -24,6 +25,11 @@ export default function BudgetPage(options: any) {
   };
 
   useEffect(() => {
+    if (isError) {
+      setErrorOnLastLoad(true);
+      router.push("/budgets");
+    }
+
     // only load the data once to avoid race condition
     if (!loadedOnce && data && data?.data.monthlyIncome !== monthlyIncome) {
       setMonthlyIncome(data.data.monthlyIncome);
@@ -49,6 +55,12 @@ export default function BudgetPage(options: any) {
           <div>
             Processing... If server was been offline, this may take up to 50
             seconds
+          </div>
+        )}
+        {errorOnLastLoad && (
+          <div>
+            There was an error loading your data, it may not have been saved
+            correctly.
           </div>
         )}
         <button className="btn-primary">
