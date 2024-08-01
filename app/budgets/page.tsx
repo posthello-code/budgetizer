@@ -77,7 +77,6 @@ export default function BudgetPage(options: any) {
             const alertText =
               "To load your data in the future, enter the following ID on the home page";
             if (options.searchParams.id) {
-              //router.push(`/budgets/save?id=${options.searchParams.id}`);
               setIsSaving(true);
               results = await budgetizerApi.updateBudgetById(
                 options.searchParams.id,
