@@ -16,5 +16,5 @@ export interface Budget {
 
 export interface EncryptedBudget {
   id: string;
-  data: string;
+  data: Uint8Array;
 }
