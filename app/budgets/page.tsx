@@ -6,9 +6,11 @@ import Link from "next/link";
 import useBudget from "./[id]/swr";
 import budgetizerApi from "../services/budgetizer-api";
 import { useRouter } from "next/navigation";
+import { Budget } from "./models";
 
 export default function BudgetPage(options: any) {
   const router = useRouter();
+  const [errorOnLastLoad, setErrorOnLastLoad] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [loadedOnce, setLoadedOnce] = useState<boolean>(false);
   const { data, isLoading, isError } = useBudget(options.searchParams.id);
@@ -23,6 +25,11 @@ export default function BudgetPage(options: any) {
   };
 
   useEffect(() => {
+    if (isError) {
+      setErrorOnLastLoad(true);
+      router.push("/budgets");
+    }
+
     // only load the data once to avoid race condition
     if (!loadedOnce && data && data?.data.monthlyIncome !== monthlyIncome) {
       setMonthlyIncome(data.data.monthlyIncome);
@@ -50,28 +57,35 @@ export default function BudgetPage(options: any) {
             seconds
           </div>
         )}
+        {errorOnLastLoad && (
+          <div>
+            There was an error loading your data, it may not have been saved
+            correctly.
+          </div>
+        )}
         <button className="btn-primary">
           <Link href="/">Back</Link>
         </button>
         <button
           className="btn-primary"
           onClick={async () => {
-            const budgetData = {
+            const budgetData: Budget = {
+              id: options.searchParams.id,
               data: { monthlyIncome: monthlyIncome, expenses: expenses },
             };
-            setIsSaving(true);
             let results;
             const alertText =
               "To load your data in the future, enter the following ID on the home page";
             if (options.searchParams.id) {
+              setIsSaving(true);
               results = await budgetizerApi.updateBudgetById(
                 options.searchParams.id,
                 budgetData
               );
               setIsSaving(false);
-              console.log(results.data);
               alert(`${alertText} ${options.searchParams.id}`);
             } else {
+              setIsSaving(true);
               results = await budgetizerApi.createBudget(budgetData);
               setIsSaving(false);
               alert(`${alertText} ${results.data._id}`);
