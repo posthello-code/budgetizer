@@ -14,7 +14,6 @@
     "axios": "^1.7.2",
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^12.0.2",
-    "crypto-js": "^4.2.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
@@ -23,7 +22,6 @@
     "wasm-themis": "^0.15.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
