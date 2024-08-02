@@ -27,6 +27,7 @@ export default function BudgetPage(options: any) {
   const [budgetId, setBudgetId] = useState<string>();
   const [displayConfirmation, setDisplayConfirmation] =
     useState<boolean>(false);
+  const [isBackendLoading, setIsBackendLoading] = useState<boolean>(false);
 
   const onResize = () => {
     setIsSmallScreen(window.innerWidth < 1024);
@@ -99,6 +100,7 @@ export default function BudgetPage(options: any) {
 
   return (
     <main style={{ height: "100vh" }}>
+      {isBackendLoading && <div>Loading...</div>}
       {displayConfirmation && (
         <SaveConfirmation
           budgetId={budgetId}
@@ -119,6 +121,7 @@ export default function BudgetPage(options: any) {
             id="save-button"
             className="btn-primary"
             onClick={async () => {
+              setIsBackendLoading(true);
               const budgetData: Budget = {
                 id: options.searchParams.id,
                 data: { monthlyIncome: monthlyIncome, expenses: expenses },
@@ -135,10 +138,12 @@ export default function BudgetPage(options: any) {
                 const key = await libthemis.generateKey();
                 const base64key = Buffer.from(key).toString("base64");
                 results = await budgetizerApi.createBudget(budgetData, key);
+                isLoading;
                 setTempKey(base64key.toString());
                 setBudgetId(results.data._id);
                 setDisplayConfirmation(true);
               }
+              setIsBackendLoading(false);
             }}
           >
             Save
