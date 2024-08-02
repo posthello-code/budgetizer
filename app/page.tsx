@@ -66,6 +66,19 @@ function BudgetLoaderControls(props: any) {
           />
         </label>
       </div>
+      <div id="home-key-input" className="input-box">
+        <label>
+          Enter your key
+          <br></br>
+          <input
+            className="input-box p-1 m-1"
+            type="text"
+            onChange={(event) => {
+              localStorage.setItem("tempKey", event.target.value);
+            }}
+          />
+        </label>
+      </div>
       <div className="home-page">
         <button
           className="btn-primary"
