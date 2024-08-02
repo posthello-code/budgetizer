@@ -20,9 +20,7 @@ export default class {
     return encrypted;
   }
   public static async decryptWithKey(data: Uint8Array, key: SymmetricKey) {
-    console.log("init themis");
     await this.initThemis();
-    console.log("done init");
     let cell = themis.SecureCellSeal.withKey(key);
     let encrypted = cell.decrypt(data);
 

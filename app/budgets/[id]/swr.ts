@@ -11,7 +11,6 @@ const fetcher = async (id: string): Promise<AxiosResponse> => {
 };
 
 export default function useBudget(id: String) {
-  console.log("useBudget");
   const { data, error, isLoading } = useSWRImmutable(id, fetcher, {});
   return { data, isLoading, isError: error };
 }

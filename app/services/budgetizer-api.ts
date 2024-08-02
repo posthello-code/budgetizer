@@ -37,7 +37,6 @@ export default class budgetizerApi {
         const decrypted: string = new TextDecoder().decode(decryptor);
 
         response.data.data = JSON.parse(decrypted);
-        console.log(response.data.data);
         return response;
       })
       .catch((e) => {
