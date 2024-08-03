@@ -2,9 +2,11 @@ A simple budgeting app.
 
 * Check out the live version here [here](https://nextjs-weld-beta-80.vercel.app)
 * If you press the save button, data is saved to the [backend](https://github.com/posthello-code/budgetizer-backend)
-* When you save the budget an ID will be generated.
-* There is no authentication but you can only reload or update a budget if you know the ID.
-* You can reload a budget using the ID on the main page or else you can navigate directly to it using the id in the url. Example: `https://nextjs-weld-beta-80.vercel.app/budgets/{id}`
+* The app uses Cossack Lab's ["Secure Cell"](https://docs.cossacklabs.com/themis/crypto-theory/cryptosystems/secure-cell/) to encrypt data.
+* There is no authentication but you need to provide the ID to fetch data from the API, and you need the symmetric key to decrypt the data.
+* When a user saves data for the first time a key is generated at the client side.
+* User needs to supply both the ID and the key to reload or update the data.
+* You can reload a budget using the ID on the main page or else you can navigate directly to it using the id in the url. Example: `https://nextjs-weld-beta-80.vercel.app/budgets/{id}`, doing so will prompt the UI to enter the key.
 
 ---
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
