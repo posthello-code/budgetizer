@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import RecoilContextProvider from "./services/recoil";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Budgetizer",
-  description: "A budget app",
+  description: "A budgeting app",
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
         ></meta>
       </head>
       <body style={{ minHeight: "100vh" }} className={inter.className}>
-        {children}
+        <RecoilContextProvider>{children}</RecoilContextProvider>
       </body>
     </html>
   );
