@@ -4,11 +4,13 @@ import "./globals.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import budgetizerApi from "./services/budgetizer-api";
-
+import { useRecoilState } from "recoil";
+import { budgetId as budgetIdState } from "./services/recoil";
 export default function Home() {
   const router = useRouter();
   const [loaderInput, setLoaderInput] = useState<boolean>(false);
-  const [budgetId, setBudgetId] = useState<string>("");
+  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+
   // ping render to wake up the backend
   budgetizerApi.ping();
   return (
@@ -50,7 +52,9 @@ function HomePageButtons(
 }
 
 function BudgetLoaderControls(props: any) {
-  const { setBudgetId, router, budgetId, setLoaderInput } = props;
+  const { router, setLoaderInput } = props;
+  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+
   return (
     <div className="budget-loader-controls">
       <div className="input-box">
