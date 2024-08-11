@@ -6,9 +6,14 @@ const RecoilContextProvider = ({ children }: any) => {
   return <RecoilRoot>{children}</RecoilRoot>;
 };
 
-export const budgetId = atom({
+export const budgetIdState = atom({
   key: "budgetId",
-  default: "",
+  default: "" as string,
+});
+
+export const loaderInputState = atom<boolean>({
+  key: "loaderInput",
+  default: false,
 });
 
 export default RecoilContextProvider;

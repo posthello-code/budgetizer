@@ -1,18 +1,20 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import "./globals.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import budgetizerApi from "./services/budgetizer-api";
 import { useRecoilState } from "recoil";
-import { budgetId as budgetIdState } from "./services/recoil";
+import { budgetIdState, loaderInputState } from "./services/recoil";
 export default function Home() {
   const router = useRouter();
-  const [loaderInput, setLoaderInput] = useState<boolean>(false);
+  const [loaderInput, setLoaderInput] =
+    useRecoilState<boolean>(loaderInputState);
   const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
 
   // ping render to wake up the backend
   budgetizerApi.ping();
+
   return (
     <main>
       <div className="home-page">
