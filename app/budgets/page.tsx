@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Budget } from "./models";
 import SaveConfirmation from "./components/save";
 import libthemis from "../services/themis-wasm";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function BudgetPage(options: any) {
   const router = useRouter();
@@ -189,6 +190,27 @@ export default function BudgetPage(options: any) {
               ...expenses,
             ]}
           ></BudgetPie>
+          <div
+            id="expense-list"
+            style={{ marginTop: "20px", alignSelf: "center" }}
+          >
+            Expense List:
+            {expenses.map((expense: any) => (
+              <div key={expense.id} className="flex row-auto">
+                <div>{`${expense.label} ${expense.value}`}</div>
+                <button className="ml-2 mr-2">
+                  <DeleteIcon
+                    onClick={() => {
+                      const expenseSet = new Set(expenses);
+                      expenseSet.delete(expense);
+                      const expenseArr = Array.from(expenseSet);
+                      setExpenses(Object(expenseArr));
+                    }}
+                  ></DeleteIcon>
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </main>
