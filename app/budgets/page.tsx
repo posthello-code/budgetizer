@@ -128,8 +128,6 @@ export default function BudgetPage(options: any) {
               };
               let results;
 
-              const alertText =
-                "To load your data in the future, enter the following ID on the home page";
               if (options.searchParams.id) {
                 setBudgetId(options.searchParams.id);
                 setTempKey(undefined);
@@ -138,7 +136,6 @@ export default function BudgetPage(options: any) {
                 const key = await libthemis.generateKey();
                 const base64key = Buffer.from(key).toString("base64");
                 results = await budgetizerApi.createBudget(budgetData, key);
-                isLoading;
                 setTempKey(base64key.toString());
                 setBudgetId(results.data._id);
                 setDisplayConfirmation(true);

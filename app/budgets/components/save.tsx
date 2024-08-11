@@ -72,7 +72,7 @@ export default function SaveConfirmation(props: any) {
       ) : (
         <div className="save-page flex flex-1 flex-col justify-center items-center h-screen">
           <div className="m-4">
-            Please re-enter your save changes to the budget
+            Please re-enter your key to save changes to the budget
           </div>
           <div id="id-box" className="save-page-input-box">
             <label>
