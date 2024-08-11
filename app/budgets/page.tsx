@@ -190,14 +190,11 @@ export default function BudgetPage(options: any) {
               ...expenses,
             ]}
           ></BudgetPie>
-          <div
-            id="expense-list"
-            style={{ marginTop: "20px", alignSelf: "center" }}
-          >
+          <div id="expense-list" className="p-5">
             Expense List:
             {expenses.map((expense: any) => (
               <div key={expense.id} className="flex row-auto">
-                <div>{`${expense.label} ${expense.value}`}</div>
+                <div>{`${expense.label} $${expense.value}`}</div>
                 <button className="ml-2 mr-2">
                   <DeleteIcon
                     onClick={() => {
