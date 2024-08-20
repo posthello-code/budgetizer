@@ -6,7 +6,7 @@ import Link from "next/link";
 import useBudget from "./[id]/swr";
 import budgetizerApi from "../services/budgetizer-api";
 import { useRouter } from "next/navigation";
-import { Budget } from "./models";
+import { Budget, Expense, ExpenseArray } from "./models";
 import SaveConfirmation from "./components/save";
 import libthemis from "../services/themis-wasm";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,9 +20,7 @@ export default function BudgetPage(options: any) {
     isError: isErrorLoadingFromId,
   } = useBudget(options.searchParams.id);
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
-  const [expenses, setExpenses] = useState<
-    [{ id: String; value: number; label: String }] | []
-  >([]);
+  const [expenses, setExpenses] = useState<ExpenseArray>([]);
   let [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
   const [tempKey, setTempKey] = useState<string>();
   const [budgetId, setBudgetId] = useState<string>();
@@ -179,34 +177,40 @@ export default function BudgetPage(options: any) {
               {
                 id: "Remainder",
                 label: "Remainder",
-                value:
-                  expenses.length > 0
-                    ? monthlyIncome -
-                      expenses
-                        .map((e: any) => e.value)
-                        .reduce((e, c) => e + c, 0)
-                    : monthlyIncome,
+                value: calculateRemainder(expenses, monthlyIncome),
               },
               ...expenses,
             ]}
           ></BudgetPie>
-          <div id="expense-list" className="p-5">
-            Expense List:
-            {expenses.map((expense: any) => (
-              <div key={expense.id} className="flex row-auto">
-                <div>{`${expense.label} $${expense.value}`}</div>
-                <button className="ml-2 mr-2">
-                  <DeleteIcon
-                    onClick={() => {
-                      const expenseSet = new Set(expenses);
-                      expenseSet.delete(expense);
-                      const expenseArr = Array.from(expenseSet);
-                      setExpenses(Object(expenseArr));
-                    }}
-                  ></DeleteIcon>
-                </button>
+          <div id="expense-spacer" className="p-2"></div>
+          <div
+            id="expense-container"
+            className="border-2 rounded-md p-2 border-cyan-900"
+          >
+            {expenses.length > 0 && (
+              <div id="expense-list" className="p-5">
+                <div className="underline">Expense List:</div>
+                {expenses.map((expense: any) => (
+                  <div key={expense.id} className="flex row-auto">
+                    <div>{`${expense.label} $${expense.value}`}</div>
+                    <button className="ml-2 mr-2">
+                      <DeleteIcon
+                        onClick={() => {
+                          const expenseSet = new Set(expenses);
+                          expenseSet.delete(expense);
+                          const expenseArr = Array.from(expenseSet);
+                          setExpenses(Object(expenseArr));
+                        }}
+                      ></DeleteIcon>
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+            <div id="remainder-text" className="p-5">
+              <div className="underline">Remainder:</div>
+              <div>{calculateRemainder(expenses, monthlyIncome)}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -214,4 +218,15 @@ export default function BudgetPage(options: any) {
   );
 }
 
-//
+const calculateRemainder = (expenses: ExpenseArray, monthlyIncome: number) => {
+  if (expenses.length < 1) return monthlyIncome;
+  const test = expenses.map((e: Expense) => e.value).reduce((e, c) => e + c, 0);
+  console.log(test);
+  return (
+    monthlyIncome -
+    expenses
+      .map((e: any) => e.value)
+      .reduce((e, c) => e + c, 0)
+      .toFixed(2)
+  );
+};
