@@ -24,7 +24,9 @@ export default function RootLayout({
         ></meta>
       </head>
       <body style={{ minHeight: "100vh" }} className={inter.className}>
-        <RecoilContextProvider>{children}</RecoilContextProvider>
+        <main>
+          <RecoilContextProvider>{children}</RecoilContextProvider>
+        </main>
       </body>
     </html>
   );
