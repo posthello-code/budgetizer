@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import budgetizerApi from "./services/budgetizer-api";
 import { useRecoilState } from "recoil";
 import { budgetId as budgetIdState } from "./services/recoil";
+import AssessmentTwoToneIcon from "@mui/icons-material/AssessmentTwoTone";
+
 export default function Home() {
   const router = useRouter();
   const [loaderInput, setLoaderInput] = useState<boolean>(false);
@@ -13,21 +15,25 @@ export default function Home() {
 
   // ping render to wake up the backend
   budgetizerApi.ping();
+
   return (
-    <main>
-      <div className="home-page">
-        {!loaderInput ? (
-          <HomePageButtons setLoaderInput={setLoaderInput}></HomePageButtons>
-        ) : (
-          <BudgetLoaderControls
-            router={router}
-            setBudgetId={setBudgetId}
-            budgetId={budgetId}
-            setLoaderInput={setLoaderInput}
-          ></BudgetLoaderControls>
-        )}
-      </div>
-    </main>
+    <div id="home-page-content" className="home-page flex flex-col">
+      <div className="text-2xl mb-10">Budgetizer</div>
+      <AssessmentTwoToneIcon
+        fontSize="large"
+        className="text-9xl scale-150 mb-10"
+      />
+      {!loaderInput ? (
+        <HomePageButtons setLoaderInput={setLoaderInput}></HomePageButtons>
+      ) : (
+        <BudgetLoaderControls
+          router={router}
+          setBudgetId={setBudgetId}
+          budgetId={budgetId}
+          setLoaderInput={setLoaderInput}
+        ></BudgetLoaderControls>
+      )}
+    </div>
   );
 }
 

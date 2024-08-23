@@ -98,7 +98,7 @@ export default function BudgetPage(options: any) {
   }
 
   return (
-    <main style={{ height: "100vh" }}>
+    <div style={{ height: "100vh" }}>
       {isBackendLoading && <div>Loading...</div>}
       {displayConfirmation && (
         <SaveConfirmation
@@ -214,7 +214,7 @@ export default function BudgetPage(options: any) {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
