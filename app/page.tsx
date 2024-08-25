@@ -82,7 +82,7 @@ function BudgetLoaderControls(props: any) {
           <br></br>
           <input
             className="input-box p-1 m-1"
-            type="text"
+            type="password"
             onChange={(event) => {
               localStorage.setItem("tempKey", event.target.value);
             }}
