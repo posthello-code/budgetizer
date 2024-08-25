@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import ClipboardIcon from "@mui/icons-material/ContentCopy";
 import { useRouter } from "next/navigation";
 import budgetizerApi from "@/app/services/budgetizer-api";
+import { useRecoilState } from "recoil";
+import { symKey as symKeyState } from "../../services/recoil";
 export default function SaveConfirmation(props: any) {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [copiedKey, setCopiedKey] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<boolean>(false);
+  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
+
   useEffect(() => {});
   return (
     <div className="save-page flex flex-1 flex-col justify-center items-center h-screen">
@@ -61,7 +64,7 @@ export default function SaveConfirmation(props: any) {
           <button
             className="btn-primary"
             onClick={() => {
-              localStorage.setItem("tempKey", props.tempKey);
+              setSymKey(props.tempKey);
               props.setDisplayConfirmation(false);
               router.push(`/budgets?id=${props.budgetId}`);
             }}
@@ -84,14 +87,13 @@ export default function SaveConfirmation(props: any) {
                   className="save-page-input-box w-full"
                   type="password"
                   onChange={(event) => {
-                    localStorage.setItem("tempKey", event.target.value);
+                    setSymKey(event.target.value);
                   }}
                 ></input>
                 <button
                   className="btn-primary"
                   onClick={async () => {
-                    const key = localStorage.getItem("tempKey") as string;
-
+                    const key = symKey;
                     await budgetizerApi.updateBudgetById(
                       props.budgetId,
                       props.budgetData,
