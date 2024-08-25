@@ -11,10 +11,16 @@ import SaveConfirmation from "./components/save";
 import libthemis from "../services/themis-wasm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRecoilState } from "recoil";
-import { symKey as symKeyState } from "../services/recoil";
+import {
+  symKey as symKeyState,
+  budgetId as budgetIdState,
+} from "../services/recoil";
+
 export default function BudgetPage(options: any) {
   const router = useRouter();
   const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
+  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+
   const [firstLoadFromId, setFirstLoadFromId] = useState<boolean>(false);
   const {
     data,
@@ -24,7 +30,6 @@ export default function BudgetPage(options: any) {
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
   const [expenses, setExpenses] = useState<ExpenseArray>([]);
   let [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
-  const [budgetId, setBudgetId] = useState<string>();
   const [displayConfirmation, setDisplayConfirmation] =
     useState<boolean>(false);
   const [isBackendLoading, setIsBackendLoading] = useState<boolean>(false);
@@ -89,6 +94,7 @@ export default function BudgetPage(options: any) {
                   className="btn-primary"
                   onClick={async () => {
                     setSymKey(tempKey);
+                    setBudgetId(options.searchParams.id);
                     router.push(`/budgets/${options.searchParams.id}`);
                   }}
                 >
@@ -134,7 +140,11 @@ export default function BudgetPage(options: any) {
 
               if (options.searchParams.id) {
                 setBudgetId(options.searchParams.id);
-                setDisplayConfirmation(true);
+                await budgetizerApi.updateBudgetById(
+                  budgetId as string,
+                  budgetData,
+                  symKey
+                );
               } else {
                 const key = await libthemis.generateKey();
                 const base64key = Buffer.from(key).toString("base64");
