@@ -11,4 +11,9 @@ export const budgetId = atom({
   default: "",
 });
 
+export const symKey = atom({
+  key: "symKey",
+  default: "",
+});
+
 export default RecoilContextProvider;

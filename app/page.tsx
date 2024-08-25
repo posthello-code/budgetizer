@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import budgetizerApi from "./services/budgetizer-api";
 import { useRecoilState } from "recoil";
-import { budgetId as budgetIdState } from "./services/recoil";
+import {
+  budgetId as budgetIdState,
+  symKey as symKeyState,
+} from "./services/recoil";
 import AssessmentTwoToneIcon from "@mui/icons-material/AssessmentTwoTone";
 
 export default function Home() {
@@ -60,6 +63,7 @@ function HomePageButtons(
 function BudgetLoaderControls(props: any) {
   const { router, setLoaderInput } = props;
   const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
 
   return (
     <div className="budget-loader-controls">
@@ -84,7 +88,7 @@ function BudgetLoaderControls(props: any) {
             className="input-box p-1 m-1"
             type="password"
             onChange={(event) => {
-              localStorage.setItem("tempKey", event.target.value);
+              setSymKey(event.target.value);
             }}
           />
         </label>

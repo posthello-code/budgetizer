@@ -10,9 +10,17 @@ import { Budget, Expense, ExpenseArray } from "./models";
 import SaveConfirmation from "./components/save";
 import libthemis from "../services/themis-wasm";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useRecoilState } from "recoil";
+import {
+  symKey as symKeyState,
+  budgetId as budgetIdState,
+} from "../services/recoil";
 
 export default function BudgetPage(options: any) {
   const router = useRouter();
+  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
+  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+
   const [firstLoadFromId, setFirstLoadFromId] = useState<boolean>(false);
   const {
     data,
@@ -22,11 +30,10 @@ export default function BudgetPage(options: any) {
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
   const [expenses, setExpenses] = useState<ExpenseArray>([]);
   let [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
-  const [tempKey, setTempKey] = useState<string>();
-  const [budgetId, setBudgetId] = useState<string>();
   const [displayConfirmation, setDisplayConfirmation] =
     useState<boolean>(false);
   const [isBackendLoading, setIsBackendLoading] = useState<boolean>(false);
+  const [tempKey, setTempKey] = useState<string>("");
 
   const onResize = () => {
     setIsSmallScreen(window.innerWidth < 1024);
@@ -53,10 +60,11 @@ export default function BudgetPage(options: any) {
   });
 
   if (options.searchParams.id) {
-    // the first load of an ID will always fail because we need the key
+    // when key is not known the first load of an ID will always fail
+    // if key is known we can skip prompting user for their key
     if (isErrorLoadingFromId && !firstLoadFromId)
       return (
-        <div className="save-page flex flex-1 flex-col justify-center items-center h-screen">
+        <div className="flex flex-1 flex-col justify-center items-center h-screen">
           <div className="m-4">
             Please re-enter your key to reload the budget
           </div>
@@ -70,7 +78,8 @@ export default function BudgetPage(options: any) {
                   className="save-page-input-box w-full"
                   type="password"
                   onChange={(event) => {
-                    localStorage.setItem("tempKey", event.target.value);
+                    // use temp key so we don't reload page while user typing
+                    setTempKey(event.target.value);
                   }}
                 ></input>
                 <button
@@ -84,6 +93,8 @@ export default function BudgetPage(options: any) {
                 <button
                   className="btn-primary"
                   onClick={async () => {
+                    setSymKey(tempKey);
+                    setBudgetId(options.searchParams.id);
                     router.push(`/budgets/${options.searchParams.id}`);
                   }}
                 >
@@ -103,7 +114,7 @@ export default function BudgetPage(options: any) {
       {displayConfirmation && (
         <SaveConfirmation
           budgetId={budgetId}
-          tempKey={tempKey}
+          tempKey={symKey}
           setDisplayConfirmation={setDisplayConfirmation}
           budgetData={{
             id: options.searchParams.id,
@@ -129,13 +140,16 @@ export default function BudgetPage(options: any) {
 
               if (options.searchParams.id) {
                 setBudgetId(options.searchParams.id);
-                setTempKey(undefined);
-                setDisplayConfirmation(true);
+                await budgetizerApi.updateBudgetById(
+                  budgetId as string,
+                  budgetData,
+                  symKey
+                );
               } else {
                 const key = await libthemis.generateKey();
                 const base64key = Buffer.from(key).toString("base64");
                 results = await budgetizerApi.createBudget(budgetData, key);
-                setTempKey(base64key.toString());
+                setSymKey(base64key.toString());
                 setBudgetId(results.data._id);
                 setDisplayConfirmation(true);
               }
@@ -221,7 +235,6 @@ export default function BudgetPage(options: any) {
 const calculateRemainder = (expenses: ExpenseArray, monthlyIncome: number) => {
   if (expenses.length < 1) return monthlyIncome;
   const test = expenses.map((e: Expense) => e.value).reduce((e, c) => e + c, 0);
-  console.log(test);
   return (
     monthlyIncome -
     expenses
