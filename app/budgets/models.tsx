@@ -1,5 +1,5 @@
 export interface Budget {
-  id: string;
+  id?: string;
   data: {
     monthlyIncome: number;
     expenses: ExpenseArray;
