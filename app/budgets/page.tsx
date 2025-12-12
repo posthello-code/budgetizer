@@ -1,32 +1,37 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState, useRef } from "react";
 import { Controls } from "./components/controls";
 import { BudgetPie } from "./components/budget-pie";
 import Link from "next/link";
 import useBudget from "./[id]/swr";
 import budgetizerApi from "../services/budgetizer-api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Budget, Expense, ExpenseArray } from "./models";
 import SaveConfirmation from "./components/save";
 import libthemis from "../services/themis-wasm";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useRecoilState } from "recoil";
-import {
-  symKey as symKeyState,
-  budgetId as budgetIdState,
-} from "../services/recoil";
+import { useBudgetStore } from "../services/store";
 
-export default function BudgetPage(options: any) {
+export default function BudgetPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BudgetPageContent />
+    </Suspense>
+  );
+}
+
+function BudgetPageContent() {
   const router = useRouter();
-  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
-  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const { symKey, setSymKey, budgetId, setBudgetId } = useBudgetStore();
 
-  const [firstLoadFromId, setFirstLoadFromId] = useState<boolean>(false);
   const {
     data,
     isLoading,
     isError: isErrorLoadingFromId,
-  } = useBudget(options.searchParams.id);
+    mutate,
+  } = useBudget(id);
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
   const [expenses, setExpenses] = useState<ExpenseArray>([]);
   let [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
@@ -35,34 +40,33 @@ export default function BudgetPage(options: any) {
   const [isBackendLoading, setIsBackendLoading] = useState<boolean>(false);
   const [tempKey, setTempKey] = useState<string>("");
 
+  // Track which data version we've loaded to avoid re-syncing the same data
+  const lastLoadedDataRef = useRef<any>(null);
+
   const onResize = () => {
     setIsSmallScreen(window.innerWidth < 1024);
   };
 
+  // Sync server data to local state when new data arrives
   useEffect(() => {
-    // only load the data once to avoid continuously asking for the key
-    if (
-      !firstLoadFromId &&
-      data &&
-      data?.data.monthlyIncome !== monthlyIncome
-    ) {
+    // Only sync if we have data and it's different from what we last loaded
+    if (data && data !== lastLoadedDataRef.current) {
       setMonthlyIncome(data.data.monthlyIncome);
-    }
-    if (!firstLoadFromId && data && data?.data.expenses !== expenses) {
       setExpenses(data.data.expenses);
+      lastLoadedDataRef.current = data;
     }
-    if (data) {
-      setFirstLoadFromId(true);
-    }
+  }, [data]);
 
+  useEffect(() => {
     window.addEventListener("resize", onResize);
     onResize();
-  });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-  if (options.searchParams.id) {
+  if (id) {
     // when key is not known the first load of an ID will always fail
     // if key is known we can skip prompting user for their key
-    if (isErrorLoadingFromId && !firstLoadFromId)
+    if (isErrorLoadingFromId && !data)
       return (
         <div className="flex flex-1 flex-col justify-center items-center h-screen">
           <div className="m-4">
@@ -94,8 +98,9 @@ export default function BudgetPage(options: any) {
                   className="btn-primary"
                   onClick={async () => {
                     setSymKey(tempKey);
-                    setBudgetId(options.searchParams.id);
-                    router.push(`/budgets/${options.searchParams.id}`);
+                    setBudgetId(id);
+                    // Stay on same URL - the symKey change will trigger SWR refetch
+                    router.replace(`/budgets?id=${id}`);
                   }}
                 >
                   OK
@@ -117,7 +122,7 @@ export default function BudgetPage(options: any) {
           tempKey={symKey}
           setDisplayConfirmation={setDisplayConfirmation}
           budgetData={{
-            id: options.searchParams.id,
+            id: id,
             data: { monthlyIncome: monthlyIncome, expenses: expenses },
           }}
         ></SaveConfirmation>
@@ -133,18 +138,22 @@ export default function BudgetPage(options: any) {
             onClick={async () => {
               setIsBackendLoading(true);
               const budgetData: Budget = {
-                id: options.searchParams.id,
+                id: id ?? undefined,
                 data: { monthlyIncome: monthlyIncome, expenses: expenses },
               };
               let results;
 
-              if (options.searchParams.id) {
-                setBudgetId(options.searchParams.id);
+              if (id) {
+                setBudgetId(id);
                 await budgetizerApi.updateBudgetById(
-                  budgetId as string,
+                  id,
                   budgetData,
                   symKey
                 );
+                // Clear the ref so next load will sync fresh data
+                lastLoadedDataRef.current = null;
+                // Invalidate SWR cache so next load fetches fresh data
+                await mutate(undefined, { revalidate: false });
               } else {
                 const key = await libthemis.generateKey();
                 const base64key = Buffer.from(key).toString("base64");

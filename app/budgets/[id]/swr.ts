@@ -1,8 +1,7 @@
 import { AxiosResponse } from "axios";
 import budgetizerApi from "../../services/budgetizer-api";
-import useSWRImmutable from "swr/immutable";
-import { useRecoilState } from "recoil";
-import { symKey as symKeyState } from "../../services/recoil";
+import useSWR from "swr";
+import { useBudgetStore } from "../../services/store";
 
 const fetcher = async (id: string, key: string): Promise<AxiosResponse> => {
   const item = key;
@@ -11,12 +10,12 @@ const fetcher = async (id: string, key: string): Promise<AxiosResponse> => {
   return r.data;
 };
 
-export default function useBudget(id: string) {
-  const [symKey] = useRecoilState<string>(symKeyState);
-  const { data, error, isLoading } = useSWRImmutable(
-    [id, symKey],
+export default function useBudget(id: string | null) {
+  const symKey = useBudgetStore((state) => state.symKey);
+  const { data, error, isLoading, mutate } = useSWR(
+    id ? [id, symKey] : null,
     ([id, symKey]) => fetcher(id, symKey),
-    {}
+    { revalidateOnFocus: true, revalidateOnMount: true }
   );
-  return { data, isLoading, isError: error };
+  return { data, isLoading, isError: error, mutate };
 }

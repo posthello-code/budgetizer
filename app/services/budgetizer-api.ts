@@ -1,8 +1,13 @@
 import axios, { AxiosResponse } from "axios";
 import environment from "../environment/default";
 import { Budget, EncryptedBudget } from "../budgets/models";
-import { SymmetricKey } from "wasm-themis";
-import libthemis from "./themis-wasm";
+import type { SymmetricKey } from "wasm-themis";
+
+async function getLibthemis() {
+  const module = await import("./themis-wasm");
+  return module.default;
+}
+
 export default class budgetizerApi {
   static async ping(): Promise<AxiosResponse> {
     const url = `${environment.baseUrl}/`;
@@ -15,6 +20,7 @@ export default class budgetizerApi {
   ): Promise<AxiosResponse> {
     const url = `${environment.baseUrl}/budgets`;
     const dataToEncypt = Buffer.from(JSON.stringify(newBudget.data), "utf-8");
+    const libthemis = await getLibthemis();
     const encryptedData = await libthemis.encryptWithKey(dataToEncypt, key);
 
     const data: Omit<EncryptedBudget, "id"> = { data: encryptedData };
@@ -23,6 +29,7 @@ export default class budgetizerApi {
 
   static async getBudgetById(id: string, key: string): Promise<AxiosResponse> {
     const url = `${environment.baseUrl}/budgets/${id}`;
+    const libthemis = await getLibthemis();
     return axios
       .get(url)
       .then(async (response) => {
@@ -52,6 +59,7 @@ export default class budgetizerApi {
     const uint8 = Uint8Array.from(atob(key), (c) => c.charCodeAt(0));
     const url = `${environment.baseUrl}/budgets/${id}`;
     const dataToEncypt = new TextEncoder().encode(JSON.stringify(budget.data));
+    const libthemis = await getLibthemis();
     const encryptedData = await libthemis.encryptWithKey(dataToEncypt, uint8);
 
     const data: EncryptedBudget = { id: id, data: encryptedData };

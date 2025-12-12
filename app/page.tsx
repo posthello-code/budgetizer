@@ -1,23 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./globals.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import budgetizerApi from "./services/budgetizer-api";
-import { useRecoilState } from "recoil";
-import {
-  budgetId as budgetIdState,
-  symKey as symKeyState,
-} from "./services/recoil";
+import { useBudgetStore } from "./services/store";
 import AssessmentTwoToneIcon from "@mui/icons-material/AssessmentTwoTone";
 
 export default function Home() {
   const router = useRouter();
   const [loaderInput, setLoaderInput] = useState<boolean>(false);
-  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+  const { budgetId, setBudgetId } = useBudgetStore();
 
-  // ping render to wake up the backend
-  budgetizerApi.ping();
+  // ping render to wake up the backend - only on client side
+  useEffect(() => {
+    import("./services/budgetizer-api").then((module) => {
+      module.default.ping();
+    });
+  }, []);
 
   return (
     <div id="home-page-content" className="home-page flex flex-col">
@@ -62,8 +61,7 @@ function HomePageButtons(
 
 function BudgetLoaderControls(props: any) {
   const { router, setLoaderInput } = props;
-  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
-  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
+  const { budgetId, setBudgetId, symKey, setSymKey } = useBudgetStore();
 
   return (
     <div className="budget-loader-controls">
