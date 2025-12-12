@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { Suspense, useEffect, useState, useRef } from "react";
 import { Controls } from "./components/controls";
 import { BudgetPie } from "./components/budget-pie";
 import Link from "next/link";
@@ -13,6 +13,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useBudgetStore } from "../services/store";
 
 export default function BudgetPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BudgetPageContent />
+    </Suspense>
+  );
+}
+
+function BudgetPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -130,7 +138,7 @@ export default function BudgetPage() {
             onClick={async () => {
               setIsBackendLoading(true);
               const budgetData: Budget = {
-                id: id,
+                id: id ?? undefined,
                 data: { monthlyIncome: monthlyIncome, expenses: expenses },
               };
               let results;
