@@ -1,11 +1,27 @@
-import themis, { initialize, SymmetricKey } from "wasm-themis";
+import type { SymmetricKey } from "wasm-themis";
+
+let themis: any;
+let initialize: any;
+let isInitialized = false;
+
+async function loadThemis() {
+  if (isInitialized) return;
+  if (typeof window === 'undefined') return;
+
+  const wasmThemis = await import('wasm-themis');
+  themis = wasmThemis.default;
+  initialize = wasmThemis.initialize;
+  isInitialized = true;
+}
 
 export default class {
   // wasm file needs to be loaded in order to use it
   private static async initThemis() {
-    await initialize("_next/static/chunks/app/libthemis.wasm")
+    if (typeof window === 'undefined') return;
+    await loadThemis();
+    await initialize("/libthemis.wasm")
       .then(() => {})
-      .catch((err) => {});
+      .catch(() => {});
   }
   static async generateKey() {
     await this.initThemis();

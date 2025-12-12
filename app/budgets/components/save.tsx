@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import ClipboardIcon from "@mui/icons-material/ContentCopy";
 import { useRouter } from "next/navigation";
 import budgetizerApi from "@/app/services/budgetizer-api";
-import { useRecoilState } from "recoil";
-import { symKey as symKeyState } from "../../services/recoil";
+import { useBudgetStore } from "../../services/store";
+
 export default function SaveConfirmation(props: any) {
   const router = useRouter();
   const [copiedKey, setCopiedKey] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<boolean>(false);
-  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
+  const { symKey, setSymKey } = useBudgetStore();
 
   useEffect(() => {});
   return (

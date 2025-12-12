@@ -5,28 +5,25 @@ import { BudgetPie } from "./components/budget-pie";
 import Link from "next/link";
 import useBudget from "./[id]/swr";
 import budgetizerApi from "../services/budgetizer-api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Budget, Expense, ExpenseArray } from "./models";
 import SaveConfirmation from "./components/save";
 import libthemis from "../services/themis-wasm";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useRecoilState } from "recoil";
-import {
-  symKey as symKeyState,
-  budgetId as budgetIdState,
-} from "../services/recoil";
+import { useBudgetStore } from "../services/store";
 
-export default function BudgetPage(options: any) {
+export default function BudgetPage() {
   const router = useRouter();
-  const [symKey, setSymKey] = useRecoilState<string>(symKeyState);
-  const [budgetId, setBudgetId] = useRecoilState<string>(budgetIdState);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const { symKey, setSymKey, budgetId, setBudgetId } = useBudgetStore();
 
   const [firstLoadFromId, setFirstLoadFromId] = useState<boolean>(false);
   const {
     data,
     isLoading,
     isError: isErrorLoadingFromId,
-  } = useBudget(options.searchParams.id);
+  } = useBudget(id);
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
   const [expenses, setExpenses] = useState<ExpenseArray>([]);
   let [isSmallScreen, setIsSmallScreen] = useState<boolean>(true);
@@ -59,7 +56,7 @@ export default function BudgetPage(options: any) {
     onResize();
   });
 
-  if (options.searchParams.id) {
+  if (id) {
     // when key is not known the first load of an ID will always fail
     // if key is known we can skip prompting user for their key
     if (isErrorLoadingFromId && !firstLoadFromId)
@@ -94,8 +91,8 @@ export default function BudgetPage(options: any) {
                   className="btn-primary"
                   onClick={async () => {
                     setSymKey(tempKey);
-                    setBudgetId(options.searchParams.id);
-                    router.push(`/budgets/${options.searchParams.id}`);
+                    setBudgetId(id);
+                    router.push(`/budgets/${id}`);
                   }}
                 >
                   OK
@@ -117,7 +114,7 @@ export default function BudgetPage(options: any) {
           tempKey={symKey}
           setDisplayConfirmation={setDisplayConfirmation}
           budgetData={{
-            id: options.searchParams.id,
+            id: id,
             data: { monthlyIncome: monthlyIncome, expenses: expenses },
           }}
         ></SaveConfirmation>
@@ -133,13 +130,13 @@ export default function BudgetPage(options: any) {
             onClick={async () => {
               setIsBackendLoading(true);
               const budgetData: Budget = {
-                id: options.searchParams.id,
+                id: id,
                 data: { monthlyIncome: monthlyIncome, expenses: expenses },
               };
               let results;
 
-              if (options.searchParams.id) {
-                setBudgetId(options.searchParams.id);
+              if (id) {
+                setBudgetId(id);
                 await budgetizerApi.updateBudgetById(
                   budgetId as string,
                   budgetData,
