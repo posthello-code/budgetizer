@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Controls } from "./components/controls";
 import { BudgetPie } from "./components/budget-pie";
 import Link from "next/link";
@@ -18,11 +18,11 @@ export default function BudgetPage() {
   const id = searchParams.get("id");
   const { symKey, setSymKey, budgetId, setBudgetId } = useBudgetStore();
 
-  const [firstLoadFromId, setFirstLoadFromId] = useState<boolean>(false);
   const {
     data,
     isLoading,
     isError: isErrorLoadingFromId,
+    mutate,
   } = useBudget(id);
   const [monthlyIncome, setMonthlyIncome] = useState<number>(1000.0);
   const [expenses, setExpenses] = useState<ExpenseArray>([]);
@@ -32,34 +32,33 @@ export default function BudgetPage() {
   const [isBackendLoading, setIsBackendLoading] = useState<boolean>(false);
   const [tempKey, setTempKey] = useState<string>("");
 
+  // Track which data version we've loaded to avoid re-syncing the same data
+  const lastLoadedDataRef = useRef<any>(null);
+
   const onResize = () => {
     setIsSmallScreen(window.innerWidth < 1024);
   };
 
+  // Sync server data to local state when new data arrives
   useEffect(() => {
-    // only load the data once to avoid continuously asking for the key
-    if (
-      !firstLoadFromId &&
-      data &&
-      data?.data.monthlyIncome !== monthlyIncome
-    ) {
+    // Only sync if we have data and it's different from what we last loaded
+    if (data && data !== lastLoadedDataRef.current) {
       setMonthlyIncome(data.data.monthlyIncome);
-    }
-    if (!firstLoadFromId && data && data?.data.expenses !== expenses) {
       setExpenses(data.data.expenses);
+      lastLoadedDataRef.current = data;
     }
-    if (data) {
-      setFirstLoadFromId(true);
-    }
+  }, [data]);
 
+  useEffect(() => {
     window.addEventListener("resize", onResize);
     onResize();
-  });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   if (id) {
     // when key is not known the first load of an ID will always fail
     // if key is known we can skip prompting user for their key
-    if (isErrorLoadingFromId && !firstLoadFromId)
+    if (isErrorLoadingFromId && !data)
       return (
         <div className="flex flex-1 flex-col justify-center items-center h-screen">
           <div className="m-4">
@@ -92,7 +91,8 @@ export default function BudgetPage() {
                   onClick={async () => {
                     setSymKey(tempKey);
                     setBudgetId(id);
-                    router.push(`/budgets/${id}`);
+                    // Stay on same URL - the symKey change will trigger SWR refetch
+                    router.replace(`/budgets?id=${id}`);
                   }}
                 >
                   OK
@@ -138,10 +138,14 @@ export default function BudgetPage() {
               if (id) {
                 setBudgetId(id);
                 await budgetizerApi.updateBudgetById(
-                  budgetId as string,
+                  id,
                   budgetData,
                   symKey
                 );
+                // Clear the ref so next load will sync fresh data
+                lastLoadedDataRef.current = null;
+                // Invalidate SWR cache so next load fetches fresh data
+                await mutate(undefined, { revalidate: false });
               } else {
                 const key = await libthemis.generateKey();
                 const base64key = Buffer.from(key).toString("base64");
